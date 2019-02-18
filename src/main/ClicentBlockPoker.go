@@ -20,6 +20,7 @@ var RoutineNum int
 var beginUserID int
 var GameType int
 var SngType int
+var SleepTime int
 var TableName string
 var MainAllianceID int32
 var RobotTableID int
@@ -83,6 +84,8 @@ func init() {
 	GameType, _ = strconv.Atoi(conf.Read("Base", "gameType"))
 	TableName = conf.Read("Base", "tableName")
 	SngType,_ = strconv.Atoi(conf.Read("Base","sngType"))
+	SleepTime,_ = strconv.Atoi(conf.Read("Base","sleepTime"))
+	//fmt.Println("SleepTime",SleepTime)
 	RobotTableID=0
 }
 
@@ -267,7 +270,8 @@ func (c *Client) addScore() {
 
 }
 func (c *Client) TexasAddScore()  {
-	//time.Sleep(time.Duration(1) * time.Second)
+	//fmt.Println("SleepTime",SleepTime)
+	time.Sleep(time.Duration(SleepTime) * time.Second)
 	addScore := bytes.NewBuffer([]byte{})
 
 	binary.Write(addScore, binary.LittleEndian, int32(c.tableCode))
@@ -278,7 +282,7 @@ func (c *Client) TexasAddScore()  {
 	binary.Write(addScore, binary.LittleEndian, int32(0))
 	binary.Write(addScore, binary.LittleEndian, byte(2))
 
-	fmt.Println(putOutNowTime(),c.i+beginUserID," 下注 ","tableCode:",c.tableCode)
+	fmt.Println(putOutNowTime(),c.i+beginUserID," 下注 ","tableCode:",c.tableCode,SleepTime)
 	c.sendData(200, 1, addScore.Bytes())
 }
 
@@ -563,7 +567,7 @@ func (c *Client) dealRecv() {
 					copy(chairID, data[37:])
 					chairIDBuf := bytes.NewBuffer(chairID)
 					binary.Read(chairIDBuf, binary.LittleEndian, &nChairID)
-					fmt.Println(nTableCode,nChairID)
+					//fmt.Println(nTableCode,nChairID)
 					if nChairID == c.chairID && nTableCode==c.tableCode{
 						fmt.Println(putOutNowTime(),"c.chairID=",c.chairID," nChairID=",nChairID)
 						c.TexasAddScore()

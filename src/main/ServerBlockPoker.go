@@ -510,7 +510,7 @@ func (t *Table) gameStart()  {
 	nextUser := t.tableInfo.dealer
 	isEnd:=true
 	for i := 0; i < t.maxUser; i++ {
-		nextUser=(nextUser+i+1)%t.maxUser
+		nextUser=(nextUser+i+1)%(t.maxUser-1)
 		fmt.Println("nextUser",nextUser,t.chairSlice[nextUser],t.userInfo[nextUser].tableStatus)
 		if t.userInfo[nextUser].tableStatus == true {
 			isEnd=false
